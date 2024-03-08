@@ -1055,7 +1055,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
 
       // issue #577 && #542
       if (mappedStatement.isResultOrdered()) {
-        if (partialObject == null && rowValue != null) {
+        if (foundNewUniqueRow && rowValue != null) {
           nestedResultObjects.clear();
           if (!useCollectionConstructorInjection) {
             storeObject(resultHandler, resultContext, rowValue, parentMapping, resultSet);
@@ -1078,11 +1078,6 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     }
 
     if (useCollectionConstructorInjection && lastHandledCreation != null) {
-      if (mappedStatement.isResultOrdered()) {
-        // todo: this is untested so far (possibly also working though)
-        throw new ExecutorException("Not tested yet!");
-      }
-
       createAndStorePendingCreation(resultHandler, parentMapping, resultSet, resultContext, lastHandledCreation);
       return;
     }
@@ -1232,12 +1227,21 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     return foundValues;
   }
 
+  private void verifyPendingCreationResultOrdered() {
+    if (!mappedStatement.isResultOrdered()) {
+      throw new ExecutorException("Cannot reliably construct result if we are not sure the results are ordered "
+          + "so that no new previous rows would occur, set resultOrdered on your mapped statement if you have verified this");
+    }
+  }
+
   private void createAndStorePendingCreation(ResultHandler<?> resultHandler, ResultMapping parentMapping,
       ResultSet resultSet, DefaultResultContext<Object> resultContext, PendingConstructorCreation pendingCreation)
       throws SQLException {
     if (parentMapping != null) {
       throw new ExecutorException("Not supported in immutable constructor mode yet!");
     }
+
+    verifyPendingCreationResultOrdered();
 
     // todo: we can do this verification once per result type in the future
     pendingCreation.verifyCanCreate(objectFactory);

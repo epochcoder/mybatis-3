@@ -136,7 +136,7 @@
     </select>
 
     <select id="selectBlogUsingConstructorWithResultMapCollection" parameterType="int"
-            resultMap="blogUsingConstructorWithResultMapCollection">
+            resultMap="blogUsingConstructorWithResultMapCollection" resultOrdered="true">
       select b.*, p.*,
         a.id as author_id,
         a.username as author_username,

@@ -173,23 +173,23 @@
           left join Tag t on t.id = pt.tag_id
     </sql>
 
-    <select id="retrieveFullImmutableBlog" parameterType="int" resultMap="immutableBlogResultMap">
+    <select id="retrieveFullImmutableBlog" parameterType="int" resultMap="immutableBlogResultMap" resultOrdered="true">
         <include refid="allResultsJoined"/>
         where b.id = #{id}
     </select>
 
-    <select id="retrieveAllBlogsAndPostsJoined" resultMap="immutableBlogResultMap">
+    <select id="retrieveAllBlogsAndPostsJoined" resultMap="immutableBlogResultMap" resultOrdered="true">
         <include refid="allResultsJoined"/>
     </select>
 
-    <select id="retrieveAllBlogsWithoutPosts" resultMap="immutableBlogWithoutPostsResultMap">
+    <select id="retrieveAllBlogsWithoutPosts" resultMap="immutableBlogWithoutPostsResultMap" resultOrdered="true">
         select b.*
           <include refid="authorColumns"/>
         from blog b
           join Author a on b.author_id = a.id
     </select>
 
-    <select id="retrieveAllBlogsWithPostsButNoCommentsOrTags" resultMap="immutableBlogWithPostsButNoCommentsOrTagsResultMap">
+    <select id="retrieveAllBlogsWithPostsButNoCommentsOrTags" resultMap="immutableBlogWithPostsButNoCommentsOrTagsResultMap" resultOrdered="true">
         select b.*
           <include refid="authorColumns"/>
           <include refid="postColumns"/>
@@ -199,7 +199,7 @@
           join Author pa on p.author_id = pa.id
     </select>
 
-    <select id="retrieveAllBlogsWithMissingConstructor" resultMap="immutableBlogWithMissingConstructorResultMap">
+    <select id="retrieveAllBlogsWithMissingConstructor" resultMap="immutableBlogWithMissingConstructorResultMap" resultOrdered="true">
         select b.*
           <include refid="authorColumns"/>
           <include refid="postColumns"/>
