@@ -24,6 +24,7 @@ import java.sql.Statement;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -673,9 +674,9 @@ public class DefaultResultSetHandler implements ResultSetHandler {
       }
 
       // (issue #101)
-      if (resultMap.hasResultMapsUsingConstructorCollection()
-          && resultObject instanceof PendingConstructorCreation pcc) {
-        linkNestedPendingCreations(rsw, resultMap, columnPrefix, parentRowKey, pcc, resultObject, constructorArgs);
+      if (resultMap.hasResultMapsUsingConstructorCollection() && resultObject instanceof PendingConstructorCreation) {
+        linkNestedPendingCreations(rsw, resultMap, columnPrefix, parentRowKey,
+            (PendingConstructorCreation) resultObject, constructorArgs);
       }
     }
 
@@ -1098,25 +1099,25 @@ public class DefaultResultSetHandler implements ResultSetHandler {
   // NESTED RESULT MAP (PENDING CONSTRUCTOR CREATIONS)
   //
   private void linkNestedPendingCreations(ResultSetWrapper rsw, ResultMap resultMap, String columnPrefix,
-      CacheKey parentRowKey, PendingConstructorCreation pendingCreation, Object resultObject,
-      List<Object> constructorArgs) throws SQLException {
+      CacheKey parentRowKey, PendingConstructorCreation pendingCreation, List<Object> constructorArgs)
+      throws SQLException {
     final CacheKey rowKey = createRowKey(resultMap, rsw, columnPrefix);
     final CacheKey combinedKey = combineKeys(rowKey, parentRowKey);
 
     if (combinedKey != CacheKey.NULL_CACHE_KEY) {
-      nestedResultObjects.put(combinedKey, resultObject);
+      nestedResultObjects.put(combinedKey, pendingCreation);
     }
 
     final List<ResultMapping> constructorMappings = resultMap.getConstructorResultMappings();
     for (int index = 0; index < constructorMappings.size(); index++) {
-      final var constructorMapping = constructorMappings.get(index);
-      final var nestedResultMapId = constructorMapping.getNestedResultMapId();
+      final ResultMapping constructorMapping = constructorMappings.get(index);
+      final String nestedResultMapId = constructorMapping.getNestedResultMapId();
 
       if (nestedResultMapId == null) {
         continue;
       }
 
-      final var javaType = constructorMapping.getJavaType();
+      final Class<?> javaType = constructorMapping.getJavaType();
       if (javaType == null || !objectFactory.isCollection(javaType)) {
         continue;
       }
@@ -1131,8 +1132,8 @@ public class DefaultResultSetHandler implements ResultSetHandler {
       final boolean alreadyCreatedCollection = hasValue && objectFactory.isCollection(actualValue.getClass());
 
       if (!isInnerCreation) {
-        final var value = pendingCreation.initializeCollectionForResultMapping(objectFactory, nestedResultMap,
-            constructorMapping, index);
+        final Collection<Object> value = pendingCreation.initializeCollectionForResultMapping(objectFactory,
+            nestedResultMap, constructorMapping, index);
         if (!alreadyCreatedCollection) {
           // override values with empty collection
           constructorArgs.set(index, value);
@@ -1151,9 +1152,8 @@ public class DefaultResultSetHandler implements ResultSetHandler {
         }
       } else {
         final PendingConstructorCreation innerCreation = (PendingConstructorCreation) actualValue;
-
-        final var value = pendingCreation.initializeCollectionForResultMapping(objectFactory, nestedResultMap,
-            constructorMapping, index);
+        final Collection<Object> value = pendingCreation.initializeCollectionForResultMapping(objectFactory,
+            nestedResultMap, constructorMapping, index);
         // we will fill this collection when building the final object
         constructorArgs.set(index, value);
         // link the creation for building later
