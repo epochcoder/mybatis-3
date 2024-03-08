@@ -108,11 +108,13 @@ public class DefaultResultSetHandler implements ResultSetHandler {
   private boolean useConstructorMappings;
 
   private static class PendingRelation {
+
     public MetaObject metaObject;
     public ResultMapping propertyMapping;
   }
 
   private static class UnMappedColumnAutoMapping {
+
     private final String column;
     private final String property;
     private final TypeHandler<?> typeHandler;
@@ -1047,42 +1049,35 @@ public class DefaultResultSetHandler implements ResultSetHandler {
       final Object partialObject = nestedResultObjects.get(rowKey);
       final boolean foundNewUniqueRow = partialObject == null;
 
-      // (issue #101) - found a new row, finish off the last creation
-      if (foundNewUniqueRow && lastHandledCreation != null) {
-        createAndStorePendingCreation(resultHandler, parentMapping, resultSet, resultContext, lastHandledCreation);
-        lastHandledCreation = null;
-      }
+      // issue #577, #542 && #101
+      if (useCollectionConstructorInjection) {
+        if (foundNewUniqueRow && lastHandledCreation != null) {
+          createAndStorePendingCreation(resultHandler, parentMapping, resultSet, resultContext, lastHandledCreation);
+          lastHandledCreation = null;
+        }
 
-      // issue #577 && #542
-      if (mappedStatement.isResultOrdered()) {
+        rowValue = getRowValue(rsw, discriminatedResultMap, rowKey, null, partialObject);
+        if (rowValue instanceof PendingConstructorCreation) {
+          lastHandledCreation = (PendingConstructorCreation) rowValue;
+        }
+      } else if (mappedStatement.isResultOrdered()) {
         if (foundNewUniqueRow && rowValue != null) {
           nestedResultObjects.clear();
-          if (!useCollectionConstructorInjection) {
-            storeObject(resultHandler, resultContext, rowValue, parentMapping, resultSet);
-          }
+          storeObject(resultHandler, resultContext, rowValue, parentMapping, resultSet);
         }
         rowValue = getRowValue(rsw, discriminatedResultMap, rowKey, null, partialObject);
       } else {
         rowValue = getRowValue(rsw, discriminatedResultMap, rowKey, null, partialObject);
-
         if (foundNewUniqueRow) {
-          if (!useCollectionConstructorInjection) {
-            storeObject(resultHandler, resultContext, rowValue, parentMapping, resultSet);
-          }
+          storeObject(resultHandler, resultContext, rowValue, parentMapping, resultSet);
         }
-      }
-
-      if (useCollectionConstructorInjection && rowValue instanceof PendingConstructorCreation) {
-        lastHandledCreation = (PendingConstructorCreation) rowValue;
       }
     }
 
     if (useCollectionConstructorInjection && lastHandledCreation != null) {
       createAndStorePendingCreation(resultHandler, parentMapping, resultSet, resultContext, lastHandledCreation);
-      return;
-    }
-
-    if (rowValue != null && mappedStatement.isResultOrdered() && shouldProcessMoreRows(resultContext, rowBounds)) {
+    } else if (rowValue != null && mappedStatement.isResultOrdered()
+        && shouldProcessMoreRows(resultContext, rowBounds)) {
       storeObject(resultHandler, resultContext, rowValue, parentMapping, resultSet);
       previousRowValue = null;
     } else if (rowValue != null) {
