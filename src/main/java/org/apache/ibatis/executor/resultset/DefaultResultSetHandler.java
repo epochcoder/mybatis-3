@@ -108,13 +108,11 @@ public class DefaultResultSetHandler implements ResultSetHandler {
   private boolean useConstructorMappings;
 
   private static class PendingRelation {
-
     public MetaObject metaObject;
     public ResultMapping propertyMapping;
   }
 
   private static class UnMappedColumnAutoMapping {
-
     private final String column;
     private final String property;
     private final TypeHandler<?> typeHandler;
