@@ -723,7 +723,8 @@ public class DefaultResultSetHandler implements ResultSetHandler {
           final String constructorColumnPrefix = getColumnPrefix(columnPrefix, constructorMapping);
           final ResultMap resultMap = resolveDiscriminatedResultMap(rsw.getResultSet(),
               configuration.getResultMap(constructorMapping.getNestedResultMapId()), constructorColumnPrefix);
-          value = getRowValue(rsw, resultMap, constructorColumnPrefix, parentRowKey);
+          value = getRowValue(rsw, resultMap, constructorColumnPrefix,
+              useCollectionConstructorInjection ? parentRowKey : null);
         } else {
           final TypeHandler<?> typeHandler = constructorMapping.getTypeHandler();
           value = typeHandler.getResult(rsw.getResultSet(), prependPrefix(column, columnPrefix));
