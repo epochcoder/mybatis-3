@@ -34,8 +34,16 @@
         <constructor>
             <idArg column="id" javaType="_int"/>
             <arg column="name" javaType="String"/>
-            <arg column="size" javaType="_int"/>
+            <arg javaType="RoomDetail" resultMap="roomDetailMap"/>
             <arg javaType="List" resultMap="furnitureMap" columnPrefix="furniture_"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="roomDetailMap" type="RoomDetail">
+        <constructor>
+            <arg column="wall_type" javaType="String"/>
+            <arg column="wall_height" javaType="_int"/>
+            <arg column="size_m2" javaType="_int"/>
         </constructor>
     </resultMap>
 
@@ -59,7 +67,9 @@
 
           , r.id as room_id
           , r.name as room_name
-          , r.size_m2 as room_size
+          , r.size_m2 as room_size_m2
+          , r.wall_type as room_wall_type
+          , r.wall_height as room_wall_height
 
           , f.id as room_furniture_id
           , f.description as room_furniture_description

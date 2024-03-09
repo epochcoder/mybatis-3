@@ -28,6 +28,7 @@
     <typeAliases>
         <typeAlias type="org.apache.ibatis.submitted.collection_injection.House" alias="House"/>
         <typeAlias type="org.apache.ibatis.submitted.collection_injection.Room" alias="Room"/>
+        <typeAlias type="org.apache.ibatis.submitted.collection_injection.RoomDetail" alias="RoomDetail"/>
         <typeAlias type="org.apache.ibatis.submitted.collection_injection.Furniture" alias="Furniture"/>
         <typeAlias type="org.apache.ibatis.submitted.collection_injection.Defect" alias="Defect"/>
     </typeAliases>

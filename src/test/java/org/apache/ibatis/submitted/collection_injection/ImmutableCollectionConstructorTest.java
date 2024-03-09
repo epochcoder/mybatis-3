@@ -55,21 +55,33 @@ class ImmutableCollectionConstructorTest {
 
       final StringBuilder builder = new StringBuilder();
       for (House house : houses) {
-        builder.append(house.getName()).append("\n");
+        builder.append("\n").append(house.getName());
         for (Room room : house.getRooms()) {
-          builder.append("\t").append(room.getName()).append("\n");
+          RoomDetail roomDetail = room.getRoomDetail();
+          String detailString = String.format(" (size=%d, height=%d, type=%s)", roomDetail.getRoomSize(),
+            roomDetail.getWallHeight(), roomDetail.getWallType());
+          builder.append("\n").append("\t").append(room.getName()).append(detailString);
           for (Furniture furniture : room.getFurniture()) {
-            builder.append("\t\t").append(furniture.getDescription()).append("\n");
+            builder.append("\n").append("\t\t").append(furniture.getDescription());
             for (Defect defect : furniture.getDefects()) {
-              builder.append("\t\t\t").append(defect.getDefect()).append("\n");
+              builder.append("\n").append("\t\t\t").append(defect.getDefect());
             }
           }
         }
       }
 
-      String expected = "MyBatis Headquarters\n" + "\tKitchen\n" + "\t\tCoffee machine\n" + "\t\t\tDoes not work\n"
-          + "\t\tFridge\n" + "\tDining room\n" + "\t\tTable\n" + "\tProgramming room\n" + "\t\tBig screen\n"
-          + "\t\tLaptop\n" + "\t\t\tCannot run intellij\n";
+      String expected =
+        "\nMyBatis Headquarters" +
+        "\n\tKitchen (size=25, height=20, type=Brick)" +
+        "\n\t\tCoffee machine" +
+        "\n\t\t\tDoes not work" +
+        "\n\t\tFridge" +
+        "\n\tDining room (size=100, height=10, type=Wood)" +
+        "\n\t\tTable" +
+        "\n\tProgramming room (size=200, height=15, type=Steel)" +
+        "\n\t\tBig screen" +
+        "\n\t\tLaptop" +
+        "\n\t\t\tCannot run intellij";
 
       assertThat(builder.toString()).isNotEmpty().isEqualTo(expected);
     }

@@ -32,7 +32,9 @@ create table room (
     id int,
     name varchar(20),
     house_id int,
-    size_m2 int
+    size_m2 int,
+    wall_type varchar(10),
+    wall_height int
 );
 
 alter table room add constraint fk_room_house_id
@@ -58,9 +60,9 @@ alter table defect add constraint fk_defects_furniture_id
 
 insert into house (id, name) values ( 1, 'MyBatis Headquarters' );
 
-insert into room (id, name, house_id, size_m2) VALUES ( 1, 'Kitchen', 1, 25 );
-insert into room (id, name, house_id, size_m2) VALUES ( 2, 'Dining room', 1, 100 );
-insert into room (id, name, house_id, size_m2) VALUES ( 3, 'Programming room', 1, 200 );
+insert into room (id, name, house_id, size_m2, wall_type, wall_height) VALUES ( 1, 'Kitchen', 1, 25, 'Brick', 20 );
+insert into room (id, name, house_id, size_m2, wall_type, wall_height) VALUES ( 2, 'Dining room', 1, 100, 'Wood', 10 );
+insert into room (id, name, house_id, size_m2, wall_type, wall_height) VALUES ( 3, 'Programming room', 1, 200, 'Steel', 15 );
 
 insert into furniture (id, description, room_id) VALUES ( 1, 'Coffee machine', 1);
 insert into furniture (id, description, room_id) VALUES ( 2, 'Fridge', 1);

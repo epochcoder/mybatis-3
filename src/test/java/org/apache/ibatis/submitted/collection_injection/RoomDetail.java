@@ -15,39 +15,36 @@
  */
 package org.apache.ibatis.submitted.collection_injection;
 
-import java.util.List;
+public class RoomDetail {
 
-public class Room {
-  private final int id;
-  private final String name;
-  private final RoomDetail roomDetail;
-  private final List<Furniture> furniture;
+  private final String wallType;
+  private final int wallHeight;
+  private final int roomSize;
 
-  public Room(int id, String name, RoomDetail roomDetail, List<Furniture> furniture) {
-    this.id = id;
-    this.name = name;
-    this.roomDetail = roomDetail;
-    this.furniture = furniture;
+  public RoomDetail(final String wallType, final int wallHeight, final int roomSize) {
+    this.wallType = wallType;
+    this.wallHeight = wallHeight;
+    this.roomSize = roomSize;
   }
 
-  public int getId() {
-    return id;
+  public String getWallType() {
+    return wallType;
   }
 
-  public String getName() {
-    return name;
+  public int getWallHeight() {
+    return wallHeight;
   }
 
-  public RoomDetail getRoomDetail() {
-    return roomDetail;
-  }
-
-  public List<Furniture> getFurniture() {
-    return furniture;
+  public int getRoomSize() {
+    return roomSize;
   }
 
   @Override
   public String toString() {
-    return "Room{" + "id=" + id + ", name='" + name + '\'' + ", roomDetail=" + roomDetail + ", furniture=" + furniture + '}';
+    return "RoomDetail{" +
+      "wallType='" + wallType + '\'' +
+      ", wallHeight=" + wallHeight +
+      ", roomSize=" + roomSize +
+      '}';
   }
 }
