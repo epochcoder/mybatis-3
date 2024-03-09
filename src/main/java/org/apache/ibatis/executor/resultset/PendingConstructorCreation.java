@@ -44,9 +44,11 @@ final class PendingConstructorCreation {
   private final Map<String, List<PendingConstructorCreation>> linkedCreationsByResultMapId;
 
   PendingConstructorCreation(Class<?> resultType, List<Class<?>> types, List<Object> args) {
-    this.linkedCollectionMetaInfo = new HashMap<>();
-    this.linkedCollectionsByResultMapId = new HashMap<>();
-    this.linkedCreationsByResultMapId = new HashMap<>();
+    // since all our keys are based on result map id, we know we will never go over args size
+    final int maxSize = types.size();
+    this.linkedCollectionMetaInfo = new HashMap<>(maxSize);
+    this.linkedCollectionsByResultMapId = new HashMap<>(maxSize);
+    this.linkedCreationsByResultMapId = new HashMap<>(maxSize);
     this.resultType = resultType;
     this.constructorArgTypes = types;
     this.constructorArgs = args;
@@ -67,7 +69,7 @@ final class PendingConstructorCreation {
       linkedCollectionMetaInfo.put(index, new PendingCreationMetaInfo(resultMap.getType(), resultMapId));
 
       // will be checked before we finally create the object) as we cannot reliably do that here
-      return (Collection<Object>) objectFactory.create(constructorMapping.getJavaType());
+      return (Collection<Object>) objectFactory.create(parameterType);
     });
   }
 
