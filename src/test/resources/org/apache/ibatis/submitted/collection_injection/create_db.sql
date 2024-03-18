@@ -14,9 +14,10 @@
 --    limitations under the License.
 --
 
+drop table defect if exists;
+drop table furniture if exists;
 drop table room if exists;
 drop table house if exists;
-drop table furniture if exists;
 
 create table house (
     id int not null primary key,

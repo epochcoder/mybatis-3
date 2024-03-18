@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled // should not run in pipeline as this is a performance test
 class PropertyVsConstructorPerformanceTest {
 
   private static SqlSessionFactory sqlSessionFactory;
@@ -68,7 +69,6 @@ class PropertyVsConstructorPerformanceTest {
   }
 
   @Test
-  @Disabled
   void runPerformanceTest() {
     final Random random = new Random();
     final long iterations = 1_000;
