@@ -1035,12 +1035,17 @@ public class DefaultResultSetHandler implements ResultSetHandler {
   private void handleRowValuesForNestedResultMap(ResultSetWrapper rsw, ResultMap resultMap,
       ResultHandler<?> resultHandler, RowBounds rowBounds, ResultMapping parentMapping) throws SQLException {
     final boolean useCollectionConstructorInjection = resultMap.hasResultMapsUsingConstructorCollection();
+    boolean verifyPendingCreationResult = true;
+    PendingConstructorCreation lastHandledCreation = null;
+    if (useCollectionConstructorInjection) {
+      verifyPendingCreationPreconditions(parentMapping);
+    }
+
     final DefaultResultContext<Object> resultContext = new DefaultResultContext<>();
     ResultSet resultSet = rsw.getResultSet();
     skipRows(resultSet, rowBounds);
     Object rowValue = previousRowValue;
 
-    PendingConstructorCreation lastHandledCreation = null;
     while (shouldProcessMoreRows(resultContext, rowBounds) && !resultSet.isClosed() && resultSet.next()) {
       final ResultMap discriminatedResultMap = resolveDiscriminatedResultMap(resultSet, resultMap, null);
       final CacheKey rowKey = createRowKey(discriminatedResultMap, rsw, null);
@@ -1051,8 +1056,12 @@ public class DefaultResultSetHandler implements ResultSetHandler {
       // issue #577, #542 && #101
       if (useCollectionConstructorInjection) {
         if (foundNewUniqueRow && lastHandledCreation != null) {
-          createAndStorePendingCreation(resultHandler, parentMapping, resultSet, resultContext, lastHandledCreation);
+          createAndStorePendingCreation(resultHandler, resultSet, resultContext, lastHandledCreation,
+              verifyPendingCreationResult);
           lastHandledCreation = null;
+          // we only need to verify the first the result for a given result set
+          // as we can assume the next result will look exactly the same w.r.t its mapping
+          verifyPendingCreationResult = false;
         }
 
         rowValue = getRowValue(rsw, discriminatedResultMap, rowKey, null, partialObject);
@@ -1074,7 +1083,8 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     }
 
     if (useCollectionConstructorInjection && lastHandledCreation != null) {
-      createAndStorePendingCreation(resultHandler, parentMapping, resultSet, resultContext, lastHandledCreation);
+      createAndStorePendingCreation(resultHandler, resultSet, resultContext, lastHandledCreation,
+          verifyPendingCreationResult);
     } else if (rowValue != null && mappedStatement.isResultOrdered()
         && shouldProcessMoreRows(resultContext, rowBounds)) {
       storeObject(resultHandler, resultContext, rowValue, parentMapping, resultSet);
@@ -1221,26 +1231,22 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     return foundValues;
   }
 
-  private void verifyPendingCreationResultOrdered() {
+  private void verifyPendingCreationPreconditions(ResultMapping parentMapping) {
+    if (parentMapping != null) {
+      throw new ExecutorException(
+          "Cannot construct objects with collections in constructors using multiple result sets yet!");
+    }
+
     if (!mappedStatement.isResultOrdered()) {
       throw new ExecutorException("Cannot reliably construct result if we are not sure the results are ordered "
           + "so that no new previous rows would occur, set resultOrdered on your mapped statement if you have verified this");
     }
   }
 
-  private void createAndStorePendingCreation(ResultHandler<?> resultHandler, ResultMapping parentMapping,
-      ResultSet resultSet, DefaultResultContext<Object> resultContext, PendingConstructorCreation pendingCreation)
+  private void createAndStorePendingCreation(ResultHandler<?> resultHandler, ResultSet resultSet,
+      DefaultResultContext<Object> resultContext, PendingConstructorCreation pendingCreation, boolean shouldVerify)
       throws SQLException {
-    if (parentMapping != null) {
-      throw new ExecutorException("Not supported in immutable constructor mode yet!");
-    }
-
-    verifyPendingCreationResultOrdered();
-
-    // todo: we can do this verification once per result type in the future
-    pendingCreation.verifyCanCreate(objectFactory);
-    final Object result = pendingCreation.create(objectFactory);
-
+    final Object result = pendingCreation.create(objectFactory, shouldVerify);
     storeObject(resultHandler, resultContext, result, null, resultSet);
     nestedResultObjects.clear();
   }

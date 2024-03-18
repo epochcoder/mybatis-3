@@ -107,7 +107,7 @@ final class PendingConstructorCreation {
    * @param objectFactory
    *          the object factory
    */
-  void verifyCanCreate(ObjectFactory objectFactory) {
+  private void verifyCanCreate(ObjectFactory objectFactory) {
     // before we create, we need to get the constructor to be used and verify our types match
     // since we added to the collection completely unchecked
     final Constructor<?> resolvedConstructor = objectFactory.resolveConstructor(resultType, constructorArgTypes);
@@ -168,10 +168,16 @@ final class PendingConstructorCreation {
    *
    * @param objectFactory
    *          the object factory
+   * @param verifyCreate
+   *          should we verify this object can be created, should only be needed once
    *
    * @return the new immutable result
    */
-  Object create(ObjectFactory objectFactory) {
+  Object create(ObjectFactory objectFactory, boolean verifyCreate) {
+    if (verifyCreate) {
+      verifyCanCreate(objectFactory);
+    }
+
     final List<Object> newArguments = new ArrayList<>(constructorArgs.size());
     for (int i = 0; i < constructorArgs.size(); i++) {
       final PendingCreationMetaInfo creationMetaInfo = linkedCollectionMetaInfo.get(i);
@@ -191,8 +197,7 @@ final class PendingConstructorCreation {
         final List<PendingConstructorCreation> linkedCreations = linkedCreationsByResultMapId.get(resultMapId);
 
         for (PendingConstructorCreation linkedCreation : linkedCreations) {
-          linkedCreation.verifyCanCreate(objectFactory);
-          emptyCollection.add(linkedCreation.create(objectFactory));
+          emptyCollection.add(linkedCreation.create(objectFactory, verifyCreate));
         }
 
         newArguments.add(emptyCollection);
