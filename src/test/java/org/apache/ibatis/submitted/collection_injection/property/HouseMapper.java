@@ -13,12 +13,14 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.apache.ibatis.submitted.collection_injection;
+package org.apache.ibatis.submitted.collection_injection.property;
 
 import java.util.List;
 
 public interface HouseMapper {
 
   List<House> getAllHouses();
+
+  House getHouse(int it);
 
 }

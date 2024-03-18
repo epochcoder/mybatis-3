@@ -13,35 +13,35 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.apache.ibatis.submitted.collection_injection;
+package org.apache.ibatis.submitted.collection_injection.immutable;
 
-import java.util.List;
+public class ImmutableRoomDetail {
 
-public class House {
-  private final int id;
-  private final String name;
-  private final List<Room> rooms;
+  private final String wallType;
+  private final int wallHeight;
+  private final int roomSize;
 
-  public House(int id, String name, List<Room> rooms) {
-    this.id = id;
-    this.name = name;
-    this.rooms = rooms;
+  public ImmutableRoomDetail(final String wallType, final int wallHeight, final int roomSize) {
+    this.wallType = wallType;
+    this.wallHeight = wallHeight;
+    this.roomSize = roomSize;
   }
 
-  public int getId() {
-    return id;
+  public String getWallType() {
+    return wallType;
   }
 
-  public String getName() {
-    return name;
+  public int getWallHeight() {
+    return wallHeight;
   }
 
-  public List<Room> getRooms() {
-    return rooms;
+  public int getRoomSize() {
+    return roomSize;
   }
 
   @Override
   public String toString() {
-    return "House{" + "id=" + id + ", name='" + name + '\'' + ", rooms=" + rooms + '}';
+    return "ImmutableRoomDetail{" + "wallType='" + wallType + '\'' + ", wallHeight=" + wallHeight + ", roomSize="
+        + roomSize + '}';
   }
 }

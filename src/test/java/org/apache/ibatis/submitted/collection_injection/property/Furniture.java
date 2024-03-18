@@ -13,27 +13,41 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.apache.ibatis.submitted.collection_injection;
+package org.apache.ibatis.submitted.collection_injection.property;
 
-public class Defect {
-  private final int id;
-  private final String defect;
+import java.util.List;
 
-  public Defect(int id, String defect) {
-    this.id = id;
-    this.defect = defect;
-  }
+public class Furniture {
+  private int id;
+  private String description;
+  private List<Defect> defects;
 
   public int getId() {
     return id;
   }
 
-  public String getDefect() {
-    return defect;
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public List<Defect> getDefects() {
+    return defects;
+  }
+
+  public void setDefects(List<Defect> defects) {
+    this.defects = defects;
   }
 
   @Override
   public String toString() {
-    return "Defect{" + "id=" + id + ", defect='" + defect + '\'' + '}';
+    return "Furniture{" + "id=" + id + ", description='" + description + '\'' + ", defects='" + defects + '\'' + '}';
   }
 }

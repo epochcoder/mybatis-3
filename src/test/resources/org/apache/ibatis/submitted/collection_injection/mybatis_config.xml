@@ -26,11 +26,17 @@
     </settings>
 
     <typeAliases>
-        <typeAlias type="org.apache.ibatis.submitted.collection_injection.House" alias="House"/>
-        <typeAlias type="org.apache.ibatis.submitted.collection_injection.Room" alias="Room"/>
-        <typeAlias type="org.apache.ibatis.submitted.collection_injection.RoomDetail" alias="RoomDetail"/>
-        <typeAlias type="org.apache.ibatis.submitted.collection_injection.Furniture" alias="Furniture"/>
-        <typeAlias type="org.apache.ibatis.submitted.collection_injection.Defect" alias="Defect"/>
+        <typeAlias type="org.apache.ibatis.submitted.collection_injection.property.House" alias="House"/>
+        <typeAlias type="org.apache.ibatis.submitted.collection_injection.property.Room" alias="Room"/>
+        <typeAlias type="org.apache.ibatis.submitted.collection_injection.property.RoomDetail" alias="RoomDetail"/>
+        <typeAlias type="org.apache.ibatis.submitted.collection_injection.property.Furniture" alias="Furniture"/>
+        <typeAlias type="org.apache.ibatis.submitted.collection_injection.property.Defect" alias="Defect"/>
+
+        <typeAlias type="org.apache.ibatis.submitted.collection_injection.immutable.ImmutableHouse" alias="ImmutableHouse"/>
+        <typeAlias type="org.apache.ibatis.submitted.collection_injection.immutable.ImmutableRoom" alias="ImmutableRoom"/>
+        <typeAlias type="org.apache.ibatis.submitted.collection_injection.immutable.ImmutableRoomDetail" alias="ImmutableRoomDetail"/>
+        <typeAlias type="org.apache.ibatis.submitted.collection_injection.immutable.ImmutableFurniture" alias="ImmutableFurniture"/>
+        <typeAlias type="org.apache.ibatis.submitted.collection_injection.immutable.ImmutableDefect" alias="ImmutableDefect"/>
     </typeAliases>
 
     <environments default="development">
@@ -47,6 +53,7 @@
     </environments>
 
     <mappers>
-        <mapper class="org.apache.ibatis.submitted.collection_injection.HouseMapper" />
+        <mapper class="org.apache.ibatis.submitted.collection_injection.immutable.ImmutableHouseMapper" />
+        <mapper class="org.apache.ibatis.submitted.collection_injection.property.HouseMapper" />
     </mappers>
 </configuration>

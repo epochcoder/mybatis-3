@@ -13,17 +13,17 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.apache.ibatis.submitted.collection_injection;
+package org.apache.ibatis.submitted.collection_injection.immutable;
 
 import java.util.List;
 
-public class Room {
+public class ImmutableRoom {
   private final int id;
   private final String name;
-  private final RoomDetail roomDetail;
-  private final List<Furniture> furniture;
+  private final ImmutableRoomDetail roomDetail;
+  private final List<ImmutableFurniture> furniture;
 
-  public Room(int id, String name, RoomDetail roomDetail, List<Furniture> furniture) {
+  public ImmutableRoom(int id, String name, ImmutableRoomDetail roomDetail, List<ImmutableFurniture> furniture) {
     this.id = id;
     this.name = name;
     this.roomDetail = roomDetail;
@@ -38,16 +38,17 @@ public class Room {
     return name;
   }
 
-  public RoomDetail getRoomDetail() {
+  public ImmutableRoomDetail getRoomDetail() {
     return roomDetail;
   }
 
-  public List<Furniture> getFurniture() {
+  public List<ImmutableFurniture> getFurniture() {
     return furniture;
   }
 
   @Override
   public String toString() {
-    return "Room{" + "id=" + id + ", name='" + name + '\'' + ", roomDetail=" + roomDetail + ", furniture=" + furniture + '}';
+    return "ImmutableRoom{" + "id=" + id + ", name='" + name + '\'' + ", roomDetail=" + roomDetail + ", furniture="
+        + furniture + '}';
   }
 }

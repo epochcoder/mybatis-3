@@ -96,7 +96,7 @@ class ImmutableConstructorTest {
 
       final ImmutablePost postTwo = posts.get(1);
       assertThat(postTwo).isNotNull().isInstanceOf(ImmutablePost.class);
-      assertThat(postOne.getCreatedOn()).isNotNull();
+      assertThat(postTwo.getCreatedOn()).isNotNull();
       assertThat(postTwo.getAuthor()).isNotNull();
       assertThat(postTwo.getSection()).isEqualTo(Section.VIDEOS);
       assertThat(postTwo.getSubject()).isEqualTo("Paul Hogan on Toy Dogs");

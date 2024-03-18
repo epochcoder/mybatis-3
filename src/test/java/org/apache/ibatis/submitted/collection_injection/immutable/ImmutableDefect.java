@@ -13,35 +13,27 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.apache.ibatis.submitted.collection_injection;
+package org.apache.ibatis.submitted.collection_injection.immutable;
 
-import java.util.List;
-
-public class Furniture {
+public class ImmutableDefect {
   private final int id;
-  private final String description;
-  private final List<Defect> defects;
+  private final String defect;
 
-  public Furniture(int id, String description, List<Defect> defects) {
+  public ImmutableDefect(int id, String defect) {
     this.id = id;
-    this.description = description;
-    this.defects = defects;
+    this.defect = defect;
   }
 
   public int getId() {
     return id;
   }
 
-  public String getDescription() {
-    return description;
-  }
-
-  public List<Defect> getDefects() {
-    return defects;
+  public String getDefect() {
+    return defect;
   }
 
   @Override
   public String toString() {
-    return "Furniture{" + "id=" + id + ", description='" + description + '\'' + ", defects='" + defects + '\'' + '}';
+    return "ImmutableDefect{" + "id=" + id + ", defect='" + defect + '\'' + '}';
   }
 }

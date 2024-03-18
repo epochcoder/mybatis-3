@@ -18,19 +18,14 @@ drop table room if exists;
 drop table house if exists;
 drop table furniture if exists;
 
-create table users (
-  id int,
-  name varchar(20)
-);
-
 create table house (
-    id int,
-    name varchar(20)
+    id int not null primary key,
+    name varchar(255)
 );
 
 create table room (
-    id int,
-    name varchar(20),
+    id int not null primary key,
+    name varchar(255),
     house_id int,
     size_m2 int,
     wall_type varchar(10),
@@ -41,7 +36,7 @@ alter table room add constraint fk_room_house_id
     foreign key (house_id) references house (id);
 
 create table furniture (
-    id int,
+    id int not null primary key,
     description varchar(255),
     room_id int
 );
@@ -50,25 +45,10 @@ alter table furniture add constraint fk_furniture_room_id
     foreign key (room_id) references room (id);
 
 create table defect (
-    id int,
-    defect varchar(200),
+    id int not null primary key,
+    defect varchar(255),
     furniture_id int
 );
 
 alter table defect add constraint fk_defects_furniture_id
     foreign key (furniture_id) references furniture (id);
-
-insert into house (id, name) values ( 1, 'MyBatis Headquarters' );
-
-insert into room (id, name, house_id, size_m2, wall_type, wall_height) VALUES ( 1, 'Kitchen', 1, 25, 'Brick', 20 );
-insert into room (id, name, house_id, size_m2, wall_type, wall_height) VALUES ( 2, 'Dining room', 1, 100, 'Wood', 10 );
-insert into room (id, name, house_id, size_m2, wall_type, wall_height) VALUES ( 3, 'Programming room', 1, 200, 'Steel', 15 );
-
-insert into furniture (id, description, room_id) VALUES ( 1, 'Coffee machine', 1);
-insert into furniture (id, description, room_id) VALUES ( 2, 'Fridge', 1);
-insert into furniture (id, description, room_id) VALUES ( 3, 'Table', 2);
-insert into furniture (id, description, room_id) VALUES ( 4, 'Big screen', 3);
-insert into furniture (id, description, room_id) VALUES ( 5, 'Laptop', 3);
-
-insert into defect (id, defect, furniture_id) VALUES ( 1, 'Does not work', 1 );
-insert into defect (id, defect, furniture_id) VALUES ( 2, 'Cannot run intellij', 5 );
