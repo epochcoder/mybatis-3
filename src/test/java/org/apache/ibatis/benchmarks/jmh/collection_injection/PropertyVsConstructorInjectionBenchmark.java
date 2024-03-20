@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 
 @Fork(1)
 @Warmup(iterations = 1)
-@BenchmarkMode(Mode.AverageTime)
+@BenchmarkMode(Mode.All)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class PropertyVsConstructorInjectionBenchmark {
 
