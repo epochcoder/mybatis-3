@@ -45,7 +45,7 @@
         </constructor>
     </resultMap>
 
-    <resultMap id="complexAuthorId" type="org.apache.ibatis.domain.blog.immutable.ComplexImmutableAuthorId">
+    <resultMap id="complexAuthorId" type="org.apache.ibatis.domain.blog.ComplexImmutableAuthorId">
         <constructor>
             <idArg column="id" javaType="_int" />
             <idArg column="username" javaType="string" />
@@ -54,9 +54,9 @@
         </constructor>
     </resultMap>
 
-    <resultMap id="selectComplexImmutableAuthor" type="org.apache.ibatis.domain.blog.immutable.ComplexImmutableAuthor">
+    <resultMap id="selectComplexImmutableAuthor" type="org.apache.ibatis.domain.blog.ComplexImmutableAuthor">
         <constructor>
-            <idArg javaType="org.apache.ibatis.domain.blog.immutable.ComplexImmutableAuthorId"
+            <idArg javaType="org.apache.ibatis.domain.blog.ComplexImmutableAuthorId"
                 resultMap="complexAuthorId" />
             <arg column="bio" javaType="string" />
             <arg column="favourite_section" javaType="org.apache.ibatis.domain.blog.Section" />
