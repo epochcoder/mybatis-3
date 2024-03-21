@@ -145,12 +145,6 @@ public class ResultMap {
           int paramIdx2 = actualArgNames.indexOf(o2.getProperty());
           return paramIdx1 - paramIdx2;
         });
-
-        //#101
-        if (resultMap.configuration.isExperimentalConstructorCollectionMappingEnabled()) {
-          resultMap.hasResultMapsUsingConstructorCollection = resultMap.constructorResultMappings.stream()
-            .map(ResultMapping::getJavaType).anyMatch(resultMap.configuration.getObjectFactory()::isCollection);
-        }
       }
       // lock down collections
       resultMap.resultMappings = Collections.unmodifiableList(resultMap.resultMappings);
