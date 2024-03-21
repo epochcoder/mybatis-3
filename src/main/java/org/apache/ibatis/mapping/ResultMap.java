@@ -46,6 +46,7 @@ public class ResultMap {
   private Set<String> mappedColumns;
   private Set<String> mappedProperties;
   private Discriminator discriminator;
+  private boolean hasResultMapsUsingConstructorCollection;
   private boolean hasNestedResultMaps;
   private boolean hasNestedQueries;
   private Boolean autoMapping;
@@ -63,7 +64,7 @@ public class ResultMap {
     }
 
     public Builder(Configuration configuration, String id, Class<?> type, List<ResultMapping> resultMappings,
-        Boolean autoMapping) {
+                   Boolean autoMapping) {
       resultMap.configuration = configuration;
       resultMap.id = id;
       resultMap.type = type;
@@ -111,6 +112,14 @@ public class ResultMap {
         }
         if (resultMapping.getFlags().contains(ResultFlag.CONSTRUCTOR)) {
           resultMap.constructorResultMappings.add(resultMapping);
+
+          //#101
+          if (resultMap.configuration.isExperimentalConstructorCollectionMappingEnabled()) {
+            Class<?> javaType = resultMapping.getJavaType();
+            resultMap.hasResultMapsUsingConstructorCollection = resultMap.hasResultMapsUsingConstructorCollection
+              || (javaType != null && resultMap.configuration.getObjectFactory().isCollection(javaType));
+          }
+
           if (resultMapping.getProperty() != null) {
             constructorArgNames.add(resultMapping.getProperty());
           }
@@ -136,6 +145,12 @@ public class ResultMap {
           int paramIdx2 = actualArgNames.indexOf(o2.getProperty());
           return paramIdx1 - paramIdx2;
         });
+
+        //#101
+        if (resultMap.configuration.isExperimentalConstructorCollectionMappingEnabled()) {
+          resultMap.hasResultMapsUsingConstructorCollection = resultMap.constructorResultMappings.stream()
+            .map(ResultMapping::getJavaType).anyMatch(resultMap.configuration.getObjectFactory()::isCollection);
+        }
       }
       // lock down collections
       resultMap.resultMappings = Collections.unmodifiableList(resultMap.resultMappings);
@@ -211,9 +226,7 @@ public class ResultMap {
   }
 
   public boolean hasResultMapsUsingConstructorCollection() {
-    return configuration.isExperimentalConstructorCollectionMappingEnabled()
-        && this.constructorResultMappings.stream().filter(crm -> crm.getNestedQueryId() == null)
-            .map(ResultMapping::getJavaType).anyMatch(configuration.getObjectFactory()::isCollection);
+    return hasResultMapsUsingConstructorCollection;
   }
 
   public boolean hasNestedResultMaps() {
