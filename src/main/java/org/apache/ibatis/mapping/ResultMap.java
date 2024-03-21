@@ -64,7 +64,7 @@ public class ResultMap {
     }
 
     public Builder(Configuration configuration, String id, Class<?> type, List<ResultMapping> resultMappings,
-                   Boolean autoMapping) {
+        Boolean autoMapping) {
       resultMap.configuration = configuration;
       resultMap.id = id;
       resultMap.type = type;
@@ -117,7 +117,8 @@ public class ResultMap {
           if (resultMap.configuration.isExperimentalConstructorCollectionMappingEnabled()) {
             Class<?> javaType = resultMapping.getJavaType();
             resultMap.hasResultMapsUsingConstructorCollection = resultMap.hasResultMapsUsingConstructorCollection
-              || (javaType != null && resultMap.configuration.getObjectFactory().isCollection(javaType));
+              || (resultMapping.getNestedQueryId() == null
+              && javaType != null && resultMap.configuration.getObjectFactory().isCollection(javaType));
           }
 
           if (resultMapping.getProperty() != null) {
